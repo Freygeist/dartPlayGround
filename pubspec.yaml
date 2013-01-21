@@ -1,0 +1,5 @@
+name:  gifted
+description:  A sample application
+
+dependencies:
+  browser: any

@@ -1,0 +1,8 @@
+library hero;
+
+
+class Hero {
+
+
+  
+}
