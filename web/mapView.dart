@@ -2,6 +2,7 @@ library mapView;
 
 import 'dart:html';
 import 'dart:core';
+import './hero.dart';
 
 const GRID = true;
 
@@ -10,6 +11,8 @@ var tileHeight = 30;
 
 var sizeFieldX = 10;
 var sizeFieldY = 10;
+int tileX = 0;
+int tileY = 0;
 
 class MapView {
 
@@ -46,11 +49,10 @@ class MapView {
   void drawTile(CanvasRenderingContext2D context, int x, int y) {
     
     //clear the tiles
-    //context.clearRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
+    //context.clearRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight)
     
     context.fillStyle = "lightGreen";
-    context.rect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
-    context.fill();
+    context.fillRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
   }
   
   /**
@@ -66,8 +68,6 @@ class MapView {
     context.strokeStyle = 'black';
     context.lineWidth = 1;
     context.strokeRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
-    
-    
   }
   
   /**
@@ -76,14 +76,37 @@ class MapView {
    * 
    **/
   void drawHoverOnMouseOver(CanvasRenderingContext2D context, mouseX, mouseY) {
-    var xCoord = (mouseX/tileWidth).floor()*tileWidth;
-    var yCoord = (mouseY/tileHeight).floor()*tileHeight;
+    int xCoord = ((mouseX/tileWidth).floor()*tileWidth).toInt();
+    int yCoord = ((mouseY/tileHeight).floor()*tileHeight).toInt();
     
+    if(xCoord != tileX || yCoord != tileY){
+      //draw new
+      this.drawTile(context, (tileX/tileWidth).floor().toInt(), (tileY/tileHeight).floor().toInt());
+      this.drawGrid(context, (tileX/tileWidth).floor().toInt(), (tileY/tileHeight).floor().toInt());
+      tileX = xCoord;
+      tileY = yCoord;
+    }   
     
     //clear the mouseover
-    context.clearRect(xCoord, yCoord, tileWidth, tileHeight);
+    //context.clearRect(xCoord, yCoord, tileWidth, tileHeight);
     
     context.fillStyle = 'white';
     context.fillRect(xCoord, yCoord, tileWidth, tileHeight);
+  }
+  
+  /**
+   * draw hero 
+   */
+  Hero paintHero(CanvasRenderingContext2D context, Hero h){
+    ImageElement image = h.getImage();
+    image.on.load.add((e){
+      context.drawImage(image, h.getX()*tileWidth, h.getY()*tileHeight, image.width, image.height);
+    });
+    
+    this.drawTile(context, h.getOldX(), h.getOldY());
+    this.drawGrid(context, h.getOldX(), h.getOldY());
+    h.setOldCoords();
+    context.drawImage(image, h.getX()*tileWidth, h.getY()*tileHeight, image.width, image.height);
+    return h;
   }
 }

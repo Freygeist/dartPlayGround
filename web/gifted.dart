@@ -4,16 +4,16 @@ import './hero.dart';
 
 
 MapView mv = new MapView();
+Hero hero = new Hero(3,3, 1);
 
 void main() {
   CanvasElement canvas = query("#canvas");
   var context = canvas.context2d;
   mv.drawMap(context);
+  mv.paintHero(context, hero);
   
-  document.window.on.keyDown.add(onKeyDown, true);
-  canvas.on.mouseOut.add((e) => onMouseOut(e, context), true);
+  document.window.on.keyDown.add((e) => onKeyDown(e, context), true);
   canvas.on.mouseMove.add((e) => onMouseMove(e, context), true);
-  canvas.on.mouseOver.add((e) => onMouseOver(e, context), true);
 }
 
 /**
@@ -27,48 +27,34 @@ void onMouseMove(event, context) {
 
 /**
  * 
- * on mouse over event handler
- * 
- */
-void onMouseOver(event, context) {
-  print(event.target);
-  
-  event.target.style.color = "orange";
-}
-
-/**
- * 
- * on mouse out event handler
- * 
- */
-void onMouseOut(event, context) {
-  
-  mv.drawMap(context);
-  
-}
-
-/**
- * 
  * on mouse move event handler
  * 
  */
-void onKeyDown(event) {
+void onKeyDown(event, context) {
   switch(event.keyCode) {
     
     case 38:
       print('up!');
+      hero.moveUp();
+      mv.paintHero(context, hero);
       break;
       
     case 40:
       print('down!');
+      hero.moveDown();
+      mv.paintHero(context, hero);
       break;
       
     case 37:
       print('left!');
+      hero.moveLeft();
+      mv.paintHero(context, hero);
       break;
       
     case 39:
       print('right!');
+      hero.moveRight();
+      mv.paintHero(context, hero);
       break;
       
     default:
